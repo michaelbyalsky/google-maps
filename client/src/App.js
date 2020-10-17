@@ -21,6 +21,7 @@ import {
   ComboboxList,
   ComboboxOption,
 } from "@reach/combobox";
+const libraries = ["places"];
 
 function App() {
   const [tries, setTries] = useState(0);
@@ -31,7 +32,6 @@ function App() {
   const [selected, setSelected] = useState(null);
   const [place, setRandomPlace] = useState(null);
   const placeRef = React.useRef();
-  const libraries = ["places"];
   const mapContainerStyle = {
     width: "100vw",
     height: "100vh",
@@ -52,11 +52,18 @@ function App() {
       alert("you looser");
       setGameStart(false);
       setTries(0);
+      setDistance(0);
+      setDistance(0);
+      setRandomPlace(null)
+      return
     }
     if (km < 10) {
       alert("you are my man");
       setGameStart(false);
       setTries(0);
+      setDistance(0);
+      setRandomPlace(null)
+      return
     }
     setDistance(km);
   };
@@ -105,22 +112,23 @@ function App() {
     mapRef.current = map;
   });
 
-  const onMapClick = 
-    (e) => {
-      let lat = e.latLng.lat();
-      let lng = e.latLng.lng();
+  const onMapClick = (e) => {
+    let lat = e.latLng.lat();
+    let lng = e.latLng.lng();
+    if(place){
       calDistance(lat, lng);
-      console.log(e);
-
-      setMarkers((markers) => [
-        ...markers,
-        {
-          lat: e.latLng.lat(),
-          lng: e.latLng.lng(),
-          date: new Date(),
-        },
-      ]);
     }
+    console.log(e);
+
+    setMarkers((markers) => [
+      ...markers,
+      {
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+        date: new Date(),
+      },
+    ]);
+  };
 
   if (loadError) return "Error loading Map";
   if (!isLoaded) return "Loading Map";
