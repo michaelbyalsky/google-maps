@@ -73,7 +73,6 @@ function App() {
   };
 
   const generateRandomPlace = () => {
-    setTries(0);
     setMarkers([]);
     const randomPlaces = places[Math.floor(Math.random() * places.length)];
     setRandomPlace(randomPlaces);
@@ -105,7 +104,7 @@ function App() {
     mapRef.current = map;
   });
 
-  const onMapClick = 
+  const onMapClick = React.useCallback(
     (e) => {
       let lat = e.latLng.lat();
       let lng = e.latLng.lng();
@@ -120,7 +119,9 @@ function App() {
           date: new Date(),
         },
       ]);
-    }
+    },
+    [place]
+  );
 
   if (loadError) return "Error loading Map";
   if (!isLoaded) return "Loading Map";

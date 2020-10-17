@@ -23,7 +23,7 @@ import {
 } from "@reach/combobox";
 
 function App() {
-  const [tries, setTries] = useState(0);
+  const [tries, setTries] = useState(0)
   const [time, setTime] = useState(null);
   const [gameStart, setGameStart] = useState(false);
   const [markers, setMarkers] = useState([]);
@@ -40,26 +40,29 @@ function App() {
   let randomPlace;
   console.log(place);
 
-  const calDistance = (currentLat, currentLng) => {
-    console.log(place);
-    const currentDistance = getDistance(
-      { latitude: place.Y, longitude: place.X },
-      { latitude: currentLat, longitude: currentLng }
-    );
-    let km = convertDistance(currentDistance, "km");
-    setTries(tries + 1);
-    if (tries > 5) {
-      alert("you looser");
-      setGameStart(false);
-      setTries(0);
-    }
-    if (km < 10) {
-      alert("you are my man");
-      setGameStart(false);
-      setTries(0);
-    }
-    setDistance(km);
-  };
+  const calDistance = React.useCallback(
+    (currentLat, currentLng) => {
+      console.log(place);
+      const currentDistance = getDistance(
+        { latitude: place.Y, longitude: place.X },
+        { latitude: currentLat, longitude: currentLng }
+      );
+      let km = convertDistance(currentDistance, "km");
+      setTries(tries + 1)
+      if (tries > 5) {
+        alert("you looser");
+        setGameStart(false);
+        setTries(0)
+      }
+      if (km < 10) {
+        alert("you are my man");
+        setGameStart(false);
+        setTries(0)
+      }
+      setDistance(km);
+    },
+    [place]
+  );
 
   const startTimer = () => {
     const timer = setTimeout(() => {
@@ -73,7 +76,6 @@ function App() {
   };
 
   const generateRandomPlace = () => {
-    setTries(0);
     setMarkers([]);
     const randomPlaces = places[Math.floor(Math.random() * places.length)];
     setRandomPlace(randomPlaces);
@@ -105,7 +107,7 @@ function App() {
     mapRef.current = map;
   });
 
-  const onMapClick = 
+  const onMapClick = React.useCallback(
     (e) => {
       let lat = e.latLng.lat();
       let lng = e.latLng.lng();
@@ -120,7 +122,9 @@ function App() {
           date: new Date(),
         },
       ]);
-    }
+    },
+    [place]
+  );
 
   if (loadError) return "Error loading Map";
   if (!isLoaded) return "Loading Map";

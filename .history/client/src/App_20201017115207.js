@@ -101,11 +101,11 @@ function App() {
   );
 
   const mapRef = React.useRef();
-  const onMapLoad = React.useCallback((map) => {
+  const onMapLoad = (map) => {
     mapRef.current = map;
   });
 
-  const onMapClick = 
+  const onMapClick = React.useCallback(
     (e) => {
       let lat = e.latLng.lat();
       let lng = e.latLng.lng();
@@ -120,7 +120,8 @@ function App() {
           date: new Date(),
         },
       ]);
-    }
+    },
+
 
   if (loadError) return "Error loading Map";
   if (!isLoaded) return "Loading Map";
