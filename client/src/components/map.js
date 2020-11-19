@@ -8,8 +8,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useHistory } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-
-
 import {
   GoogleMap,
   Marker,
@@ -30,9 +28,18 @@ import { formatRelative } from "date-fns";
 // } from "@reach/combobox";
 const libraries = ["places"];
 
+const mapContainerStyle = {
+  width: "auto",
+  height: "80vh",
+};
+
 export default function Map() {
   const [tries, setTries] = useState(0);
-  const [time, setTime] = useState(null);
+  const [center, setCenter] = useState({
+    lat: 31.768318,
+    lng: 35.213711,
+  });
+  const [time, setTime] = useState(0);
   const [gameStart, setGameStart] = useState(false);
   const [markers, setMarkers] = useState([]);
   const [distance, setDistance] = useState([]);
@@ -42,12 +49,15 @@ export default function Map() {
   const history = useHistory();
   const [error, setError] = useState("");
 
-
-  const placeRef = React.useRef();
-  const mapContainerStyle = {
-    width: "auto",
-    height: "80vh",
-  };
+  const handleLogout = React.useCallback(async () => {
+    setError("");
+    try {
+      await logout();
+      history.push("/login");
+    } catch {
+      setError("Failed to log out");
+    }
+  }, []);
 
   const calDistance = (currentLat, currentLng) => {
     console.log(place);
@@ -63,16 +73,16 @@ export default function Map() {
       setTries(0);
       setDistance(0);
       setDistance(0);
-      setRandomPlace(null);
-      return;
+      setRandomPlace(null)
+      return
     }
     if (km < 10) {
       alert("you are my man");
       setGameStart(false);
       setTries(0);
       setDistance(0);
-      setRandomPlace(null);
-      return;
+      setRandomPlace(null)
+      return
     }
     setDistance(km);
   };
@@ -81,7 +91,7 @@ export default function Map() {
     const timer = setTimeout(() => {
       setGameStart(false);
       alert("you lost");
-    }, 5 * 60 * 1000);
+    }, 1 * 60 * 1000);
 
     return () => {
       clearTimeout(timer);
@@ -95,18 +105,13 @@ export default function Map() {
     setRandomPlace(randomPlaces);
     setGameStart(true);
     startTimer();
-    setTime(300);
+    setTime(60);
   };
 
   const panTo = React.useCallback(({ lat, lng }) => {
     mapRef.current.panTo({ lat, lng });
     mapRef.current.setZoom(14);
   }, []);
-
-  const center = {
-    lat: 31.768318,
-    lng: 35.213711,
-  };
 
   const { isLoaded, loadError } = useLoadScript(
     {
@@ -121,21 +126,10 @@ export default function Map() {
     mapRef.current = map;
   });
 
-  async function handleLogout() {
-    setError("");
-
-    try {
-      await logout();
-      history.push("/login");
-    } catch {
-      setError("Failed to log out");
-    }
-  }
-
   const onMapClick = (e) => {
     let lat = e.latLng.lat();
     let lng = e.latLng.lng();
-    if (place) {
+    if(place){
       calDistance(lat, lng);
     }
     console.log(e);
@@ -157,23 +151,24 @@ export default function Map() {
       <div class="row">
         <div class="col-lg-4 mb-6">
           <h2>
-            Discover Israel <span>🇮🇱 </span>
+            Discover Israel <span>🇮🇱</span>
           </h2>
-          </div>
-          <div class="col-lg-6"></div>
-          <div class="col-lg-2">
+        </div>
+        <div class="col-lg-6"></div>
+        <div class="col-lg-2">
           <Button variant="link" onClick={handleLogout}>
-          Log Out
-        </Button>        </div>
+            Log Out
+          </Button>{" "}
+        </div>
       </div>
       <div class="row">
         <div class="col-lg-4 mb-4">
           <div class="card">
-            <p>You Have 5 minutes to find the place in the map</p>
+            <p>You Have 1 minute to find the place in the map</p>
             {gameStart ? (
               <Timer time={time} setTime={setTime} />
             ) : (
-              <div>5:00 minutes</div>
+              <div>1:00 minutes</div>
             )}
 
             <div class="input-group mb-3">
@@ -238,7 +233,7 @@ export default function Map() {
                 mapContainerStyle={mapContainerStyle}
                 zoom={8}
                 center={center}
-                onLoad={onMapLoad}
+                // onLoad={onMapLoad}
               >
                 {markers.map((marker) => {
                   return (

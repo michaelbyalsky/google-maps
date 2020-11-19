@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-export default function Timer({ time, setTime }) {
+function Timer({ time, setTime }) {
   useEffect(() => {
-    setInterval(() => setTime((time) => time - 1), 1000);
-  }, []);
+    let interval = setInterval(() => setTime((time) => time - 1), 1000);
+    return () => clearInterval(interval);
+  }, [time]);
   return (
     <span>{`${Math.floor(time / 60)}:${((time % 60) + "").padStart(
       2,
@@ -11,3 +12,5 @@ export default function Timer({ time, setTime }) {
     )} minutes`}</span>
   );
 }
+
+export default React.memo(Timer)
