@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Timer from "./Timer";
 import { places } from "../csvjson";
 import { getDistance, convertDistance } from "geolib";
-import Locate from "./Locate";
 import { Card, Form, Button, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useHistory } from "react-router-dom";
